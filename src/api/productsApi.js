@@ -16,3 +16,13 @@ export const postAdd = async (product) => {
 
     return res.data
 }
+
+export const getList = async(pageParam) => {
+
+    const {page, size} = pageParam
+
+    // async니까 await
+    const res = await axios.get(`${host}/list`, {params: {page:page, size: size}})
+
+    return res.data
+}
