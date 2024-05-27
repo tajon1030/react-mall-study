@@ -26,3 +26,27 @@ export const getList = async(pageParam) => {
 
     return res.data
 }
+
+export const getOne = async(pno) => {
+    const res = await axios.get(`${host}/${pno}`);
+
+    return res.data;
+}
+
+export const deleteOne = async(pno) => {
+    const res = await axios.delete(`${host}/${pno}`);
+
+    return res.data
+}
+
+// 수정은 multipart/form-data 주의
+// 경로처리가 불편해서 pno는 따로 빼서 받음
+export const putOne = async(pno, product) => {
+    
+    const header = {headers: {'Content-Type':'multipart/form-data'}}
+
+    // product 전달해야하고 header도 같이 보내야함
+    const res = await axios.put(`${host}/${pno}`, product, header);
+
+    return res.data
+}
