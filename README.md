@@ -153,12 +153,12 @@ hooks / useCustomMove.js (refresh이용하여 토글방식으로 구성)
 
 
 #### 참고
-원래 get방식은 preflight 일어나지않는데 json데이터를 get방식으로 가지고올때(application/json) 프리플라이트가 일어남
+원래 get방식은 preflight 일어나지않는데 json데이터를 get방식으로 가지고올때(application/json) 프리플라이트가 일어남  
 
 ### 리덕스 Redux
 리액트는 App.js를 루트로해서 컴포넌트를 중심으로 뭔가가 만들어지며,  
 이때 어떻게 데이터를 주고받을까가 문제가 됨.  
-=> 한 컴포넌트에서 상태를 변경했을때 다른컴포넌트까지 영향을 주는 문제가 발생
+=> 한 컴포넌트에서 상태를 변경했을때 다른컴포넌트까지 영향을 주는 문제가 발생  
 ~~(이러한경우 컨텍스트를 사용하기도하지만)~~  
 => 리덕스는 여러컴포넌트들이 같이사용하는 데이터에대해 처리해줄수있는 상태기능을 제공하여 문제를 해결한다.   
 (ex-로그인같이 어플리케이션이 유지해야하는 상태데이터)  
@@ -174,7 +174,7 @@ src / store.js
 
 #### 리듀서
 금고지기.  
-기존의 상태를(예시에서는 initState의 이메일이 비어있는 상태) 어떻게 바꿀것인지 다음 결과값을 리턴해주는 함수
+기존의 상태를(예시에서는 initState의 이메일이 비어있는 상태) 어떻게 바꿀것인지 다음 결과값을 리턴해주는 함수  
 createSlice를 이용  
 slice안에는 reducer가 있고, 유지해야하는 값이 있음  
 src / slices / loginSlice.js (리액트에서는 컴포넌트가 아닌이상 소문자로 시작)  
@@ -182,8 +182,8 @@ src / slices / loginSlice.js (리액트에서는 컴포넌트가 아닌이상 �
 #### useDispatch
 발행  
 뿌리는것.  
-로그인을 했을때(버튼을 눌렀을때) 로그인 내역을 컴포넌트 전체의 상태데이터로 바꿔줄때 사용
-src / components / member / LoginComponent.js, LogoutComponent.js
+로그인을 했을때(버튼을 눌렀을때) 로그인 내역을 컴포넌트 전체의 상태데이터로 바꿔줄때 사용  
+src / components / member / LoginComponent.js, LogoutComponent.js  
 
 #### useSelector
 구독  
@@ -191,9 +191,23 @@ src / components / menu / BasicMenu.js
 
 #### createAsyncThunk
 loginSlice에서 memberApi에 있는 loginPost를 호출할때 createAsyncThunk를 이용하여 데이터를 가지고옴  
-추가적으로 extraReducer를 이용하여 상태를바꿔줄수있도록함
-src / slices / loginSlice.js
+추가적으로 extraReducer를 이용하여 상태를바꿔줄수있도록함  
+src / slices / loginSlice.js  
 
 #### 로그인 커스텀훅
+src / hooks / useCustomLogin.js  
 
-src / hooks / useCustomLogin.js
+### 쿠키를 활용한 로그인
+새로고침하면 상태가 날아가기때문에 쿠키를 활용  
+~~~
+npm install react-cookie
+~~~
+쿠키는 문자열이기때문에 json.stringify를 사용해야한다는점을 주의  
+util / cookieUtil.js  
+src / slices / loginSlice.js  
+
+### axios interceptors를 활용
+request나 response를 보내기 전이나 실패했을경우에 인터셉트하는 기능  
+product나 todo의 경우(액세스토큰을 써야하는 경우=로그인데이터가 필요한경우)에는 jwtAxios를 사용하고,  
+그렇지않은경우는 단순 axios를 사용하면 됨  
+util / jwtUtils.js

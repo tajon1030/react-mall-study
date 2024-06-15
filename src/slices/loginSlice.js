@@ -1,16 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { loginPost } from "../api/memberApi";
+import { getCookie, removeCookie, setCookie } from "../util/cookieUtil";
 
 const initState = {
     email: ''
+}
+
+const loadMemberCookie = () => {
+    const memberInfo = getCookie("member");
+
+    return memberInfo;
 }
 
 // createAsyncThunk(이름문자열, 함수, )
 export const loginPostAsync = createAsyncThunk('loginPostAsync', (param) => loginPost(param))
 
 const loginSlice = createSlice({
-    name: 'loginSlice',
-    initialState: initState,
+    name: 'loginSlice',    
+    // 초기상태값
+    // 쿠키가 있다면 쿠키에서부터 값을 가져오고싶음
+    initialState: loadMemberCookie() || initState,
     reducers: { // reducer는 금고를 어떻게 할것인지를 나타냄
         // 입력값을 두개밖에 받지 못함
         login: (state, action) => { // 기존의상태state, 지금처리하고싶은데이터 action
@@ -20,6 +29,8 @@ const loginSlice = createSlice({
         },
         logout: () => {
             console.log('logout...');
+            // 로그아웃시 쿠키 제거
+            removeCookie('member');
             return {...initState}
         }
 
@@ -32,6 +43,11 @@ const loginSlice = createSlice({
 
             // action.payload 실제로 전달되는 데이터
             const payload = action.payload;
+
+            // 로그인을 하면 메모리상으로도 보관해둬야하고 쿠키에도 보관을 해둬야함
+            if(!payload.error){
+                setCookie("member", JSON.stringify(payload), 1);
+            }
 
             // 리듀서이기때문에 리턴하는값이 다음상태로 유지
             return payload

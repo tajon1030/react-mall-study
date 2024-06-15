@@ -1,15 +1,25 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../slices/loginSlice';
+import useCustomLogin from '../../hooks/useCustomLogin';
 
-function LogoutComponent(props) {
+function LogoutComponent() {
 
-    // 로그아웃컴포넌트에서는 로그아웃을 뿌려야함 => dispatch필요
-    const dispatch = useDispatch();
 
+    // customHook 사용하여 주석처리
+    // // 로그아웃컴포넌트에서는 로그아웃을 뿌려야함 => dispatch필요
+    // const dispatch = useDispatch();
+
+    const {doLogout, moveToPath} = useCustomLogin();
+    
     // 버튼을 클릭하면 로그아웃 해야함
     const handleClickLogout = () => {
-        dispatch(logout())
+        // customHook 사용하여 주석처리
+        // dispatch(logout())
+
+        doLogout();
+        alert('로그아웃 되었습니다.');
+        moveToPath("/")
     }
 
     return (

@@ -5,9 +5,18 @@ import PageComponent from '../common/PageComponent';
 
 // api 응답값이랑 맞춰준 기본 변수들
 const initState = {
-    dtoList:[], pageNumList:[], pageRequestDTO: null, prev: false, next: false,
-    totoalCount: 0, prevPage: 0, nextPage: 0, totalPage: 0, current: 0 }
-
+    dtoList:[],
+    pageNumList:[],
+    pageRequestDTO: null,
+    prev: false,
+    next: false,
+    totoalCount: 0,
+    prevPage: 0,
+    nextPage: 0,
+    totalPage: 0,
+    current: 0
+  }
+  
 function ListComponent(props) {
 
     // ajax통신을 할것이고 그러기위해 기본적으로 useState, useEffect를 사용할 것
