@@ -24,8 +24,13 @@ const loginSlice = createSlice({
         // 입력값을 두개밖에 받지 못함
         login: (state, action) => { // 기존의상태state, 지금처리하고싶은데이터 action
             console.log('login......');
-            // 리턴값은 앞으로 유지해야하는 데이터(next state. 새로운 상태)
-            return {email: action.payload.email}
+
+            // 쿠키에 소셜로그인해서 받아온 값 저장
+            setCookie('member', JSON.stringify(action.payload), 1);
+
+            // // 리턴값은 앞으로 유지해야하는 데이터(next state. 새로운 상태)
+            // return {email: action.payload.email}
+            return action.payload;
         },
         logout: () => {
             console.log('logout...');
