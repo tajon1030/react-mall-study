@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { getCartItemsAsync } from "../slices/cartSlice";
-import { postChangeCart } from "../api/cartApi";
+import { getCartItemsAsync, postChangeCartAsync } from "../slices/cartSlice";
 
 const useCustomCart = () => {
     const cartItems = useSelector(state => state.cartSlice);
@@ -12,7 +11,7 @@ const useCustomCart = () => {
     }
 
     const changeCart = (param) => {
-        dispatch(postChangeCart(param))
+        dispatch(postChangeCartAsync(param))
     }
 
     return {cartItems, refreshCart, changeCart};

@@ -88,8 +88,8 @@ const ReadComponent = ({pno}) => {
             </div>
             <div className="flex justify-end p-4">
                 <button type="button"
-                        className="inline-block rounded p-4 m-2 text-xl w-32 text-white bggreen-500"
-                        onClick={handleClickAddCart} > Add Cart </button>
+                className="inline-block rounded p-4 m-2 text-xl w-32 text-white bg-green-500"
+                onClick={handleClickAddCart} > Add Cart </button>
 
                 <button type="button"
                 className="inline-block rounded p-4 m-2 text-xl w-32 text-white bg-red-500"

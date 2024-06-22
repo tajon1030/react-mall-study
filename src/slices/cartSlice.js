@@ -6,7 +6,7 @@ export const getCartItemsAsync = createAsyncThunk('getCartItemsAsync', () => {
     return getCartItems()
 })
 
-export const postCartItemsAsync = createAsyncThunk('postCartItemsAsync', (param) => {
+export const postChangeCartAsync = createAsyncThunk('postCartItemsAsync', (param) => {
     return postChangeCart(param)
 })
 
@@ -22,7 +22,7 @@ const cartSlice = createSlice({
                 console.log(action.payload);
                 return action.payload;
             })
-            .addCase(postCartItemsAsync.fulfilled, (state, action)=> {
+            .addCase(postChangeCartAsync.fulfilled, (state, action)=> {
                 console.log("postCartItemsAsync.fulfilled");
 
                 // 변경된 장바구니의 현재상태
