@@ -228,3 +228,71 @@ util / jwtUtils.js
 react : 로그인화면 -> 카카오화면 -> redirectURI -> 카카오로 액세스토큰 얻어오는 호출  
 spring : -> 액세스토큰으로 사용자 정보를 얻어오기  
 react : -> 얻어온 새로운 회원데이터(refreshToken, accessToken) 쿠키에 담기
+
+## React Query와 Recoil
+### 리액트쿼리
+비동기화된 상태관리  
+https://tanstack.com/query/v5/docs/framework/react/installation  
+~~~
+npm i @tanstack/react-query
+npm i @tanstack/react-query-devtools
+~~~
+리액트쿼리도 전체 어플리케이션의 상태를 관리하기때문에 전체어플리케이션에 해당하는 설정에 추가를 해줘야함  
+index.js or App.js에 추가  
+리액트가 동작할때 queryClient도 초기화가 된다.  
+디버깅을위해 DevTools를 이용한다.  
+~~~js
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={root}/>
+      <ReactQueryDevtools initialIsOpen={true}></ReactQueryDevtools>
+    </QueryClientProvider>
+  );
+}
+~~~
+src / App.js  
+
+
+그동안의 비동기 데이터를 관리한 방식 :  
+1. 데이터의 선언  
+2. useEffect에서 처리한 비동기 데이터를 셋팅함  
+ex) ReadComponent.js  
+~~~
+// 1. 선언
+const [product, setProduct] = useState(initState);
+
+// 2. 데이터 셋팅
+useEffect(()=>{
+  getOne(pno).then(data => {
+    setProduct(data);
+  })
+}, [pno]);
+~~~  
+
+리액트 쿼리를 사용하는 방식 :
+useQuery를 사용  
+리액트쿼리는 어플리케이션 전체에서 사용하는 상태관리로서 어떻게 키(queryKey)를 관리하느냐가 큰 이슈로 일반적으로 api설계하듯 함  
+
+상품 목록조회는 동일한 페이지 처리때문에 단건조회랑 약간의 차이점이 있음  
+-> 동일한 페이지를 다시조회했을때 쿼리키가같기때문에 다시조회를 하지않는 것때문에  
+이를 해결하기위해서 invalidate Query를 사용하곤하는데, 여기서는 refresh를 queryKey에 추가하여 사용하도록 함  
+~~~js
+    const queryClient = useQueryClient();
+    const handleClickPage = (pageParam) => {
+        if(pageParam.page === parseInt(page)){
+            queryClient.invalidateQueries("products/list");
+        }
+        
+        moveToList(pageParam);
+    }
+~~~
+
+- useMutation : insert, update, delete 같이 데이터를 변경하고싶을경우 사용  
+- **useQuery** : select 조회할때 사용  
+
+useMutation은 값을 보관하지않기때문에 queryKey가 없음  
+ex) product / AddComponent.js  
+

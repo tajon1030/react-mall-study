@@ -4,6 +4,7 @@ import FetchingModal from "../common/FetchingModal";
 import { API_SERVER_HOST } from "../../api/todoApi";
 import useCustomMove from "../../hooks/useCustomMove";
 import ResultModal from "../common/ResultModal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const initState = {
     pno: 0,
@@ -23,19 +24,40 @@ const ModifyComponent = ({pno}) => {
     const [fetching,setFetching] = useState(false);
     const [result, setResult] = useState(false); // 결과모달을 띄우기위한 상태
 
+    const delMutation = useMutation({
+        mutationFn : (pno) => deleteOne(pno)
+    });
+
+    const modMutation = useMutation({
+        mutationFn: (product) => putOne(pno, product)
+    })
+
+
+    const query = useQuery({
+        queryKey : ['products',pno],
+        queryFn : () => getOne(pno),
+        staleTime : Infinity
+    })
     const {moveToList, moveToRead} = useCustomMove();
 
     const uploadRef = useRef();
 
-    useEffect(()=> {
-        setFetching(true);
+    // useEffect(()=> {
+    //     setFetching(true);
 
-        getOne(pno).then(data => {
-            setProduct(data)
-            setFetching(false)
-        });
-    }, [pno]); // pno값이 변경되면 호출
+    //     getOne(pno).then(data => {
+    //         setProduct(data)
+    //         setFetching(false)
+    //     });
+    // }, [pno]); // pno값이 변경되면 호출
 
+    // useQuery를 사용했을때 무한루프에 빠지는것을 막아주기위한 코드
+    useEffect(()=>{
+        if(query.isSuccess){
+            setProduct(query.data);
+        }
+
+    },[pno, query.data, query.isSuccess])
 
 
     // 입력하는값을 변경해주는 역할을 하는 애
@@ -74,37 +96,68 @@ const ModifyComponent = ({pno}) => {
 
         setFetching(true)
 
-        putOne(pno, formData).then(data => {
-            setResult('Modified')
-            setFetching(false)
-        })
+        // mutation으로 변경
+        // putOne(pno, formData).then(data => {
+        //     setResult('Modified')
+        //     setFetching(false)
+        // })
+        modMutation.mutate(formData);
     }
 
     const handleClickDelete = () => {
         setFetching(true)
 
-        deleteOne(pno).then(data => {
-            setResult('Deleted')
-            setFetching(false)
-        })
+        // mutation으로 변경
+        // deleteOne(pno).then(data => {
+        //     setResult('Deleted')
+        //     setFetching(false)
+        // })
+        delMutation.mutate(pno);
     }
 
+    const queryClient = useQueryClient();
     const closeModal = () => {
-        if(result === 'Modified'){
-            moveToRead(pno)
-        }else if(result === 'Deleted'){
+        // mutation으로 변경
+        // if(result === 'Modified'){
+        //     moveToRead(pno)
+        // }else if(result === 'Deleted'){
+        //     moveToList({page:1})
+        // }
+        // setResult(null)
+        
+        queryClient.invalidateQueries(['products',pno]);
+        queryClient.invalidateQueries("products/list");
+
+        if(delMutation.isSuccess){
             moveToList({page:1})
         }
-        setResult(null)
+        
+        if(modMutation.isSuccess){
+            moveToRead(pno)
+        }
     }
 
     return (  
         <div className = "border-2 border-sky-200 mt-10 m-2 p-4">
-            {fetching? <FetchingModal/>:<></>}
+            {/* mutation으로 인한 변경 */}
+            {/* {fetching? <FetchingModal/>:<></>}
             {result? <ResultModal
                             title={`${result}`}
                             content={'처리되었습니다.'}
-                            callbackFn={closeModal}/>:<></>}
+                            callbackFn={closeModal}/>:<></>} */}
+
+            {query.isFetching || delMutation.isPending || modMutation.isPending 
+                ? <FetchingModal/> 
+                : <></>}
+
+            {delMutation.isSuccess || modMutation.isSuccess 
+                ?
+                <ResultModal
+                    title={'처리결과'}
+                    content={'정상처리 되었습니다.'}
+                    callbackFn={closeModal}></ResultModal>
+                : <></>}
+
             <div className="flex justify-center">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">
                     <div className="w-1/5 p-6 text-right font-bold">Product Name</div>

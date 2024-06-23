@@ -5,6 +5,7 @@ import FetchingModal from "../common/FetchingModal";
 import useCustomMove from "../../hooks/useCustomMove";
 import useCustomCart from "../../hooks/useCustomCart";
 import useCustomLogin from "../../hooks/useCustomLogin";
+import { useQuery } from "@tanstack/react-query";
 
 const initState = {
     pno: 0,
@@ -18,19 +19,31 @@ const host = API_SERVER_HOST;
 
 const ReadComponent = ({pno}) => {
 
-    const [product, setProduct] = useState(initState);
-    const [fetching,setFetching] = useState(false);
+    // 리액트 쿼리를 사용하기때문에 setProduct할 필요가 없어짐
+    // const [product, setProduct] = useState(initState);
+
+    // 리액트쿼리에서 isFetching을 사용하면되서 제거
+    // const [fetching,setFetching] = useState(false);
 
     const { moveToList, moveToModify, page, size } = useCustomMove();
 
-    useEffect(() => {
-        setFetching(true);
+    // 파라미터가 객체로 처리됨
+    const {data, isFetching} = useQuery({
+        queryKey: ['products', pno], // 식별자
+        queryFn: () => getOne(pno), // 실행하기위해 가져와야하는것이 무엇인지
+        staleTime : 1000 * 10 // 10초동안의 유통기한(해당시간동안 새롭게조회하지않음)
+    });
 
-        getOne(pno).then(data => {
-            setProduct(data);
-            setFetching(false);
-        })
-    },[pno]);
+    const product = data || initState;
+
+    // useEffect를 통해서 상태관리하던 비동기데이터를 useQuery로 관리하도록 변경
+    // useEffect(()=>{
+    //     getOne(pno).then(data => {
+    //         setProduct(data);
+    //         setFetching(false);
+    //     })
+    // },[pno]);
+
     // 현재 사용자의 장바구니 아이템들
     const {cartItems, changeCart} = useCustomCart();
 
@@ -55,7 +68,8 @@ const ReadComponent = ({pno}) => {
     return ( 
         <div className = "border-2 border-sky-200 mt-10 m-2 p-4">
 
-            {fetching? <FetchingModal/> :<></>}
+            {/* {fetching? <FetchingModal/> :<></>} */}
+            {isFetching? <FetchingModal/> :<></>}
 
             <div className="flex justify-center mt-10">
                 <div className="relative mb-4 flex w-full flex-wrap items-stretch">
