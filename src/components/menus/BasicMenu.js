@@ -1,11 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import useCustomLogin from '../../hooks/useCustomLogin';
 
 function BasicMenu(props) {
 
-    // 어플리케이션의 state, 컴포넌트의 state가 아님
-    const loginState = useSelector(state =>  state.loginSlice);
+    // 리덕스 툴킷사용으로 전환
+    // // 어플리케이션의 state, 컴포넌트의 state가 아님
+    // const loginState = useSelector(state =>  state.loginSlice);
+    const {loginState} = useCustomLogin();
 
     return (
         <nav id='navbar' className=" flex bg-blue-300">

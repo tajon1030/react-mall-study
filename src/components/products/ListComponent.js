@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import useCustomMove from "../../hooks/useCustomMove";
+import { useQuery } from "@tanstack/react-query";
 import { getList } from "../../api/productsApi";
-import FetchingModal from "../common/FetchingModal";
 import { API_SERVER_HOST } from "../../api/todoApi";
+import useCustomMove from "../../hooks/useCustomMove";
+import FetchingModal from "../common/FetchingModal";
 import PageComponent from "../common/PageComponent";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 // api 응답값이랑 맞춰준 기본 변수들
@@ -27,12 +26,11 @@ const ListComponent = () => {
 
     // 페칭모달 - isFetching이 있으므로 제거
     // const [fetching, setFetching] = useState(false);
-
     const {data, isFetching, error, isError} = useQuery({
         // queryKey : ['products/list', {page, size}],
         // invalidateQueries대신 refresh를 추가하여 사용
         queryKey : ['products/list', {page, size, refresh}],
-        queryFn : getList({page, size}),
+        queryFn :  () => getList({page, size}),
         staleTime : 1000 * 5
     });
 

@@ -296,3 +296,24 @@ useQuery를 사용
 useMutation은 값을 보관하지않기때문에 queryKey가 없음  
 ex) product / AddComponent.js  
 
+### Recoil
+컴포넌트에서 어떤 상태를 만들고 사용하기위해 지금까지 useState를 사용했다면,  
+그걸 atom으로 만든다고 생각하면 됨  
+state를 만들어놓고 get,set하는것  
+
+설치  
+~~~
+npm install recoil
+~~~
+
+index.js에서 `<RecoilRoot>`로 `<App>`을 감싸준다.  
+리코일에서는 atom이라는것을 만드는데 key와 default값만 주면됨  
+src / atoms / signinState.js  
+cartState.js  
+
+사용할 때에는 `useRecoilValue()`, `useSetRecoilState()` 을 사용하면 된다.  
+예제에서는 리덕스 툴킷을 걷어내고 리코일을 사용하는 방식으로 전환할것임  
+src / hooks / useCustomLogin.js  
+BasicMenu.js  
+KakaoRedirectPage.js  
+useCustomCart.js, CartComponent.js  

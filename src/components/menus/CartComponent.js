@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import useCustomLogin from '../../hooks/useCustomLogin';
+import React from 'react';
+import { useRecoilValue } from 'recoil';
 import useCustomCart from '../../hooks/useCustomCart';
+import useCustomLogin from '../../hooks/useCustomLogin';
 import CartItemComponent from '../cart/CartItemComponent';
+import { cartTotalState } from '../../atoms/cartState';
 
 function CartComponent(props) {
 
@@ -13,12 +15,14 @@ function CartComponent(props) {
     // // 스토어 상태값을 반환해주는 useSelector
     // const cartItems = useSelector(state => state.cartSlice);
 
-    const {refreshCart, cartItems, changeCart} = useCustomCart();
+    const {cartItems, changeCart} = useCustomCart();
 
-    useEffect(()=>{
-        // dispatch(getCartItemsAsync());
-        refreshCart();
-    },[isLogin]);
+    // useEffect(()=>{
+    //     // dispatch(getCartItemsAsync());
+    //     refreshCart();
+    // },[isLogin]);
+
+    const totalValue = useRecoilValue(cartTotalState);
 
     return (
         <div className="w-full">
@@ -43,6 +47,12 @@ function CartComponent(props) {
                                 </li>
                             )}
                         </ul>
+                    </div>
+
+                    <div>
+                        <div className='text-2xl text-right font-extrabold'>
+                            TOTAL: {totalValue}
+                        </div>
                     </div>
                 </div>
                 :
